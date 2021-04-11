@@ -1,0 +1,6 @@
+{
+    "origin": "http://localhost:4040",
+    "db": {
+        "name": "Production"
+    }
+}
