@@ -1,9 +1,9 @@
 'use strict';
 
 var express = require('express');
-var auth = require('../http/middleware/auth');
-var role = require('../http/middleware/role');
-var controller = require('./cache.controller')
+// var auth = require('../http/middleware/auth');
+// var role = require('../http/middleware/role');
+// var controller = require('./cache.controller')
 var router = express.Router();
 
 // router.post('/set-state', auth.isAuthenticated(), service.setUserState)

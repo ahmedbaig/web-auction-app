@@ -1,37 +1,40 @@
 "use strict";
+const moment = require("moment");
 const Joi = require("joi");
-//************************ VALIDATE USER REGISTER DATA ***********************//
-function validateRegisterData(data) {
-    const schema = Joi.object().keys({
-        userName: Joi.string().required(),
-        email: Joi.string().email({ minDomainAtoms: 2 }).required(),
-        password: Joi.string().min(5).required(),
-        phoneNo: Joi.number().required()
-    });
-    return Joi.validate(data, schema);
-}
 
-//************************ VALIDATE USER LOGIN DATA ***********************//
-function validateLoginData(data) {
+//************************ VALIDATE ITEM DATA ***********************//
+const validateItemData = async(data) => {
     const schema = Joi.object().keys({
-        email: Joi.string().email({ minDomainAtoms: 2 }).required(),
-        password: Joi.string().min(5),
-        type: Joi.string()
-    });
-    return Joi.validate(data, schema);
-}
-
-//************************ VALIDATE USER PROFILE EDIT DATA ***********************//
-const validateUserEditData = async(data) => {
-    const schema = Joi.object().keys({
-        firstName: Joi.string(),
-        lastName: Joi.string(), 
-        userName: Joi.string(), 
-        phoneNo: Joi.number()
+        name: Joi.string(),
+        description: Joi.string(),
+        image: Joi.string(),
+        price: Joi.number(),
+        expireDate: Joi.date().min(moment().startOf("day").toString()).required(),
     });
     return Joi.validate(data, schema);
 };
 
-exports.validateRegisterData = validateRegisterData;
-exports.validateLoginData = validateLoginData;
-exports.validateUserEditData = validateUserEditData;
+//************************ VALIDATE BID DATA ***********************//
+const validateBidData = async(data) => {
+    const schema = Joi.object().keys({
+        user: Joi.string(),
+        item: Joi.string(),
+        amount: Joi.number(),
+    });
+    return Joi.validate(data, schema);
+};
+
+//************************ VALIDATE AUTO BID DATA ***********************//
+const validateAutoBidData = async(data) => {
+    const schema = Joi.object().keys({
+        user: Joi.string(),
+        item: Joi.string(),
+        max: Joi.string(),
+        credit: Joi.number(),
+    });
+    return Joi.validate(data, schema);
+};
+
+exports.validateItemData = validateItemData;
+exports.validateBidData = validateBidData;
+exports.validateAutoBidData = validateAutoBidData;

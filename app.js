@@ -1,7 +1,6 @@
 'use strict';
 const fs = require("fs");
 const express = require("express");
-const { graphqlHTTP } = require('express-graphql')
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
@@ -9,9 +8,6 @@ const logger = require("morgan");
 const cors = require("cors");
 global.ROOTPATH = __dirname;
 var app = express();
-const schema = require('./app/schemas')
-const swaggerUi = require("swagger-ui-express"),
-    swaggerDocument = require("./swagger.json");
 
 app.use(cors());
 

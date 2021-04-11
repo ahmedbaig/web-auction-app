@@ -1,14 +1,10 @@
 var express = require("express");
 var app = express();
 
-app.use("/admin", require('../app/http/controllers/api/admin'));
+app.use("/item/admin", require('../app/http/controllers/api/item/admin'));
 
-app.use("/course/admin", require('../app/http/controllers/api/course/admin'));
+app.use("/item", require('../app/http/controllers/api/item'));
 
-app.use("/users/admin", require('../app/http/controllers/api/user/admin'));
-
-app.use("/course", require('../app/http/controllers/api/course'));
-
-app.use("/users", require('../app/http/controllers/api/user')); 
+app.use("/bid", require('../app/http/controllers/api/bid'));
 
 module.exports = app;

@@ -56,7 +56,9 @@ mongoose
         //     });
     })
     .catch((err) => {
+
         console.clear();
+        console.log(uri);
         spinner.stop(true);
         console.error(`❌ Server Stopped (listening on PORT : ${port})`);
         console.info(`⌚`, moment().format("DD-MM-YYYY hh:mm:ss a"));
