@@ -26,6 +26,6 @@ exports.create = function (req, res) {
                 })
         }
     } catch (error) {
-        res.send({ success: false, message: error.message });
+        res.status(500).send({ success: false, message: error.message });
     }
 }

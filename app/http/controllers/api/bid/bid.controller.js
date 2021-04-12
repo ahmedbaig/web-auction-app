@@ -28,7 +28,7 @@ exports.get = async function (req, res) {
                 res.status(400).send({ success: false, msg: error.message });
             })
     } catch (error) {
-        res.send({ success: false, message: error.message });
+        res.status(500).send({ success: false, message: error.message });
     }
 };
 
@@ -87,7 +87,7 @@ exports.bid = async function (req, res) {
                 res.status(400).send({ success: false, msg: error.message });
             })
     } catch (error) {
-        res.send({ success: false, message: error.message });
+        res.status(500).send({ success: false, message: error.message });
     }
 };
 
@@ -122,7 +122,7 @@ exports.bidConfigure = async function (req, res) {
                                         let biddingItems = bot.items;
                                         biddingItems.push(req.body.item)
                                         AutoBidService.findByIdAndUpdate(bot._id, { item: biddingItems })
-                                            .then(data => { 
+                                            .then(data => {
                                                 res.send({
                                                     success: true,
                                                     msg: "Auto bidding bot enabled for this item"
@@ -151,14 +151,46 @@ exports.bidConfigure = async function (req, res) {
                 res.status(400).send({ success: false, msg: error.message });
             })
     } catch (error) {
-        res.send({ success: false, message: error.message });
+        res.status(500).send({ success: false, message: error.message });
     }
 };
 
 exports.bidBotConfigure = async function (req, res) {
     try {
-        
+        AutoBidService.findOne({ user: req.body.user }).then(bot => {
+            if (!bot) {
+                // NO BOT FOUND WITH USER
+                AutoBidService.create(req.body)
+                    .then(newbot => {
+                        res.send({
+                            success: true,
+                            bot: newbot,
+                            msg: "Auto bidding bot created"
+                        })
+                    })
+                    .catch(error => {
+                        res.status(400).send({ success: false, msg: error.message });
+                    })
+            } else {
+                // BOT FOUND WITH USER
+                req.body.credit = 0;
+                AutoBidService.findByIdAndUpdate(req.query.id, req.body)
+                    .then(updatedbot => {
+                        res.send({
+                            success: true,
+                            bot: updatedbot,
+                            msg: "Auto bidding bot updated"
+                        })
+                    })
+                    .catch(error => {
+                        res.status(400).send({ success: false, msg: error.message });
+                    })
+            }
+        }).catch(error => {
+            res.status(400).send({ success: false, msg: error.message });
+        })
+
     } catch (error) {
-        res.send({ success: false, message: error.message });
+        res.status(500).send({ success: false, message: error.message });
     }
 };

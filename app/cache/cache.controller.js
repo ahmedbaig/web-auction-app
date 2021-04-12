@@ -13,7 +13,7 @@ exports.getRedisKeys = async function (req, res) {
       })
       .catch((error) => res.json(error));
   } catch (error) {
-    res.send({ success: false, message: error.message });
+    res.status(500).send({ success: false, message: error.message });
   }
 };
 
@@ -25,7 +25,7 @@ exports.getRedisKey = async function (req, res) {
       })
       .catch((error) => res.json(error));
   } catch (error) {
-    res.send({ success: false, message: error.message });
+    res.status(500).send({ success: false, message: error.message });
   }
 };
 
@@ -37,7 +37,7 @@ exports.deleteRedisKey = async function (req, res) {
       })
       .catch((error) => res.json(error));
   } catch (error) {
-    res.send({ success: false, message: error.message });
+    res.status(500).send({ success: false, message: error.message });
   }
 };
 
@@ -49,6 +49,6 @@ exports.deleteRedisKeys = async function (req, res) {
       })
       .catch((error) => res.json(error));
   } catch (error) {
-    res.send({ success: false, message: error.message });
+    res.status(500).send({ success: false, message: error.message });
   }
 };

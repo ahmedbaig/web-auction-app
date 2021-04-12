@@ -16,7 +16,7 @@ const AutoBidSchema = new mongoose.Schema({
     },
     credit: {
         type: Number,
-        required: true,
+        default: 0,
     },
     createdDate: {
         type: Date,

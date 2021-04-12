@@ -22,7 +22,7 @@ exports.get = function(req, res) {
                 res.status(400).send({ success: false, msg: error.message });
             })
     } catch (error) {
-        res.send({ success: false, message: error.message });
+        res.status(500).send({ success: false, message: error.message });
     }
 };
 
@@ -49,7 +49,7 @@ exports.getById = async function(req, res) {
                 res.status(400).send({ success: false, msg: error.message });
             })
     } catch (error) {
-        res.send({ success: false, message: error.message });
+        res.status(500).send({ success: false, message: error.message });
     }
 };
 
@@ -91,6 +91,6 @@ exports.search = async function(req, res) {
                 })
         }
     } catch (error) {
-        res.send({ success: false, message: error.message });
+        res.status(500).send({ success: false, message: error.message });
     }
 };

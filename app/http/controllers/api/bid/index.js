@@ -11,6 +11,6 @@ router.post('/bid', validator.validateBid(), controller.bid)
 
 router.post('/bid/auto', validator.validateAutoBidConfigure(), controller.bidConfigure) // auto bidder turn on/off
 
-router.post('/bid/bot/:id', validator.validateAutoBid(), controller.bidBotConfigure) // update bid bot
+router.post('/bid/bot', validator.validateAutoBid(), controller.bidBotConfigure) // update bid bot
 
 module.exports = router;

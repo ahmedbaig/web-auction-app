@@ -35,10 +35,8 @@ const validateAutoBidConfigureData = async(data) => {
 //************************ VALIDATE AUTO BID DATA ***********************//
 const validateAutoBidData = async(data) => {
     const schema = Joi.object().keys({
-        user: Joi.string(),
-        item: Joi.string(),
+        user: Joi.string(), 
         max: Joi.string(),
-        credit: Joi.number(),
     });
     return Joi.validate(data, schema);
 };
