@@ -19,6 +19,7 @@ const validateBidData = async(data) => {
     const schema = Joi.object().keys({
         user: Joi.string(),
         item: Joi.string(),
+        amount: Joi.number(),
     });
     return Joi.validate(data, schema);
 };

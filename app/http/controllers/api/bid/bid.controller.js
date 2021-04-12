@@ -1,10 +1,10 @@
 "use strict";
 
 const _ = require("lodash");
+const moment = require("moment");
 const BidService = require("../../services/bid.service")
 const AutoBidService = require("../../services/auto-bid.service")
 const ItemService = require("../../services/item.service");
-const { last } = require("lodash");
 exports.get = async function (req, res) {
     try {
         var limit = _.toInteger(req.query.limit);
@@ -34,10 +34,10 @@ exports.get = async function (req, res) {
 
 exports.bid = async function (req, res) {
     try {
-        let createNewBid = () => {
-            BidService.create(req.body)
+        let createNewBid = (body) => {
+            BidService.create(body)
                 .then(bid => {
-                    console.log("All good", req.body, bid)
+                    console.log("All good", body, bid)
                     return res.send({
                         success: true,
                         bid
@@ -53,6 +53,7 @@ exports.bid = async function (req, res) {
                 msg
             })
         }
+        var todayDate = moment().startOf('day');
         BidService.findLastDocument({ item: req.body.item })
             .then(last_bid => {
                 if (last_bid.length != 0) {
@@ -63,13 +64,19 @@ exports.bid = async function (req, res) {
                     } else if (last_bid[0].user == req.body.user) {
                         return conflictError("You already own the latest bid. Cannot bid again");
                     } else {
-                        return createNewBid();
+                        return createNewBid(req.body);
                     }
                 } else {
                     console.log("NO OLD BID", req.body.item)
                     // NO BID SO FAR 
-                    ItemService.findById(req.body.item)
+                    ItemService.findOne({ _id: req.body.item, expireDate: { '$gte': moment(todayDate).format('MM-DD-YYYY') } })
                         .then(item => {
+                            if (item == null) {
+                                res.status(400).send({
+                                    success: false,
+                                    msg: "Item not found"
+                                })
+                            }
                             console.log("THE REAL ITEM", item)
                             if (item.price >= req.body.amount) {
                                 return conflictError("Bidding amount too low");
@@ -80,7 +87,6 @@ exports.bid = async function (req, res) {
                         .catch(error => {
                             res.status(400).send({ success: false, msg: error.message });
                         })
-
                 }
             })
             .catch(error => {
@@ -91,8 +97,97 @@ exports.bid = async function (req, res) {
     }
 };
 
+exports.bidAuto = async function (req, res) {
+    try {
+        let createNewBid = (body) => {
+            BidService.create(body)
+                .then(bid => {
+                    console.log("All good", body, bid)
+                    return res.send({
+                        success: true,
+                        bid
+                    })
+                })
+                .catch(error => {
+                    res.status(400).send({ success: false, msg: error.message });
+                })
+        }
+        let conflictError = (msg) => {
+            return res.status(409).send({
+                success: false,
+                msg
+            })
+        }
+        var todayDate = moment().startOf('day');
+        AutoBidService.findOneNoPopulate({ user: req.body.user, item: req.body.item })
+            .then(bot => {
+                if (bot) {
+                    ItemService.findOne({ _id: req.body.item, expireDate: { '$gte': moment(todayDate).format('MM-DD-YYYY') } })
+                        .then(item => {
+                            if (item == null) {
+                                res.status(400).send({
+                                    success: false,
+                                    msg: "Item not found"
+                                })
+                            }
+                            if (bot.max > bot.credit) {
+                                if ((bot.credit + item.price) > bot.max && (bot.max - bot.credit) < item.price) {
+                                    res.status(409).send({
+                                        success: false,
+                                        msg: "Cannot deploy bot. Bidding value exceeds max bidding value"
+                                    })
+                                } else {
+                                    BidService.findLastDocument({ item: req.body.item })
+                                        .then(last_bid => {
+                                            if (last_bid.length != 0) {
+                                                console.log("OLD BID", last_bid)
+                                                // BIDS EXIST
+                                                if (last_bid[0].amount >= req.body.amount) {
+                                                    return conflictError("Bidding amount too low");
+                                                } else if (last_bid[0].user == req.body.user) {
+                                                    return conflictError("You already own the latest bid. Cannot bid again");
+                                                } else {
+                                                    console.log("NO OLD BID", req.body.item)
+                                                    // NO BID SO FAR 
+                                                    console.log("THE REAL ITEM", item)
+                                                    req.body.amount = req.body.last_bid[0].amount + 1;
+                                                    if (item.price >= req.body.amount) {
+                                                        return conflictError("Bidding amount too low");
+                                                    } else {
+                                                        return createNewBid();
+                                                    }
+                                                } 
+                                            }
+                                        })
+                                        .catch(error => {
+                                            res.status(400).send({ success: false, msg: error.message });
+                                        })
+                                }
+                            } else {
+                                res.status(409).send({
+                                    success: false,
+                                    msg: "Cannot deploy bot. Max bidding value reached"
+                                })
+                            }
+                        })
+                        .catch(error => {
+                            res.status(400).send({ success: false, msg: error.message });
+                        })
+                } else {
+                    res.status(400).send({
+                        success: false,
+                        msg: "No bot found"
+                    })
+                }
+            })
+    } catch (error) {
+        res.status(500).send({ success: false, message: error.message });
+    }
+}
+
 exports.bidConfigure = async function (req, res) {
     try {
+        var todayDate = moment().startOf('day');
         AutoBidService.findOneNoPopulate({ user: req.body.user })
             .then(bot => {
                 if (bot != null) {
@@ -110,8 +205,14 @@ exports.bidConfigure = async function (req, res) {
                             })
                     } else {
                         // START BOT FOR THIS ITEM
-                        ItemService.findById(req.body.item)
+                        ItemService.findOne({ _id: req.body.item, expireDate: { '$gte': moment(todayDate).format('MM-DD-YYYY') } })
                             .then(item => {
+                                if (item == null) {
+                                    res.status(400).send({
+                                        success: false,
+                                        msg: "Item not found"
+                                    })
+                                }
                                 if (bot.max != bot.credit) {
                                     if ((bot.credit + item.price) > bot.max && (bot.max - bot.credit) < item.price) {
                                         res.status(409).send({
@@ -141,7 +242,7 @@ exports.bidConfigure = async function (req, res) {
                             })
                     }
                 } else {
-                    res.send({
+                    res.status(400).send({
                         success: false,
                         msg: "No bot found"
                     })
