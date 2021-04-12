@@ -5,11 +5,11 @@ const AutoBidSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    item: {
+    item: [{
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "items"
-    },
+    }],
     max: {
         type: Number,
         required: true,

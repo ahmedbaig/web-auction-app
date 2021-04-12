@@ -17,7 +17,7 @@ exports.create = function(itemData) {
 }
 
 exports.findLimitPage = function(query, page, limit) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function(resolve, reject) { 
         Item.find(query)
             .skip(limit * (page - 1) ? limit * (page - 1) : 0)
             .limit(limit ? limit : 50)
