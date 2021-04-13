@@ -16,10 +16,13 @@ app.use(express.static(__dirname + "views"));
 app.set("view engine", "ejs");
 
 // Express TCP requests parsing
-app.use(bodyParser.json())
+app.use(express.static(path.join(__dirname, 'public/images')));
+app.use(express.static(path.join(__dirname, 'dist/AuctionApp/')));
 app.use(bodyParser.urlencoded({
-    extended: true
-}))
+    limit: '50mb',
+    extended: false
+}));
+app.use(bodyParser.json());
 app.use(cookieParser());
 
 // create a write stream (in append mode) for system logger

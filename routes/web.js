@@ -9,6 +9,6 @@ module.exports = function(app) {
         );
     });
     app.get("/*", function(req, res) {
-        res.render(path.join(ROOTPATH, "frontEnd/dist/AuctionApp"));
+        res.render(path.join(ROOTPATH, "dist/AuctionApp"));
     });
 };
