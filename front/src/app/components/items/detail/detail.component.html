@@ -11,8 +11,7 @@
                             <h2>{{item.name}}</h2>
                             <p>{{item.description}}</p>
                         </div>
-                    </div>
-
+                    </div> 
                     <div class="col-md-2">
                         <h5>Price <span class="itemPrice">${{item.price}}</span></h5>
                     </div>
@@ -25,14 +24,16 @@
                                         <div class="input-group-prepend">
                                             <div class="input-group-text">$</div>
                                         </div>
-                                        <input type="number" [min]="bids[bids.length-1].amount" class="form-control"
+                                        <input type="number" *ngIf="bids.length==0" [min]="item.price" class="form-control"
+                                            id="inlineFormInputGroupUsername2" placeholder="Enter Bid Amount">
+                                        <input type="number" *ngIf="bids.length>0" [min]="bids[bids.length-1].amount" class="form-control"
                                             id="inlineFormInputGroupUsername2" placeholder="Enter Bid Amount">
                                     </div>
                                 </form>
                             </div>
 
                             <div class="col-md-5">
-                                <div class="btn-group" role="group" aria-label="Basic example">
+                                <div class="btn-group" role="group">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <button class="btn btn-primary" style="font-size:12px"> Bid
