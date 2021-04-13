@@ -2,6 +2,7 @@
 
 const _ = require("lodash");
 const moment = require("moment");
+const mongoose = require("mongoose");
 const ItemService = require("../../services/item.service")
 exports.get = function(req, res) {
     try {
@@ -29,7 +30,7 @@ exports.get = function(req, res) {
 exports.getById = async function(req, res) {
     try {
         let queryArr = [
-            { $match: { _id: { $eq: req.params.id } } },
+            { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
             {
                 $lookup: {
                     from: "bids",

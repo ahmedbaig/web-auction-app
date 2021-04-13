@@ -1,9 +1,9 @@
 'use strict';
 
 const { AutoBid } = require('../../../models/auto-bid.model');
-exports.create = function (bidData) {
-    return new Promise(function (resolve, reject) {
-        AutoBid.create(bidData, function (err, bid) {
+exports.create = function(bidData) {
+    return new Promise(function(resolve, reject) {
+        AutoBid.create(bidData, function(err, bid) {
             if (err) {
                 reject(err);
             } else {
@@ -14,9 +14,9 @@ exports.create = function (bidData) {
     })
 }
 
-exports.findByIdAndUpdate = function (id, update) {
-    return new Promise(function (resolve, reject) {
-        AutoBid.findByIdAndUpdate(id, update, function (err, bid) {
+exports.findByIdAndUpdate = function(id, update) {
+    return new Promise(function(resolve, reject) {
+        AutoBid.findByIdAndUpdate(id, update, function(err, bid) {
             if (err) {
                 reject(err);
             } else {
@@ -27,9 +27,9 @@ exports.findByIdAndUpdate = function (id, update) {
     })
 }
 
-exports.findById = function (id) {
-    return new Promise(function (resolve, reject) {
-        AutoBid.findById(id, function (err, bid) {
+exports.findById = function(id) {
+    return new Promise(function(resolve, reject) {
+        AutoBid.findById(id, function(err, bid) {
             if (err) {
                 reject(err);
             } else if (!bid) {
@@ -42,9 +42,9 @@ exports.findById = function (id) {
     })
 }
 
-exports.find = function (query) {
-    return new Promise(function (resolve, reject) {
-        AutoBid.find(query, function (err, bids) {
+exports.find = function(query) {
+    return new Promise(function(resolve, reject) {
+        AutoBid.find(query, function(err, bids) {
             if (err) {
                 reject(err);
             } else {
@@ -55,9 +55,9 @@ exports.find = function (query) {
     })
 }
 
-exports.findOneNoPopulate = function (query) {
-    return new Promise(function (resolve, reject) {
-        AutoBid.find(query, function (err, bids) {
+exports.findOneNoPopulate = function(query) {
+    return new Promise(function(resolve, reject) {
+        AutoBid.findOne(query, function(err, bids) {
             if (err) {
                 reject(err);
             } else {
@@ -68,9 +68,9 @@ exports.findOneNoPopulate = function (query) {
     })
 }
 
-exports.findOne = function (query) {
-    return new Promise(function (resolve, reject) {
-        AutoBid.find(query, function (err, bids) {
+exports.findOne = function(query) {
+    return new Promise(function(resolve, reject) {
+        AutoBid.findOne(query, function(err, bids) {
             if (err) {
                 reject(err);
             } else {
@@ -81,17 +81,17 @@ exports.findOne = function (query) {
     })
 }
 
-exports.findLimitPage = function (query, page, limit) {
-    return new Promise(function (resolve, reject) {
+exports.findLimitPage = function(query, page, limit) {
+    return new Promise(function(resolve, reject) {
         AutoBid.find(query)
             .skip(limit * (page - 1) ? limit * (page - 1) : 0)
             .limit(limit ? limit : 50)
             .sort({ createdDate: 1 })
-            .exec(function (err, bots) {
+            .exec(function(err, bots) {
                 if (err) {
                     reject(err);
                 }
-                AutoBid.count(query).exec(async function (err, count) {
+                AutoBid.count(query).exec(async function(err, count) {
                     if (err) {
                         reject(err);
                     } else {

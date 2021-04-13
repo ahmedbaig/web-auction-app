@@ -9,7 +9,7 @@ router.get('/get/:item', controller.get)
 
 router.post('/bid', validator.validateBid(), controller.bid)
 
-router.post('/bid/auto', validator.validateAutoBidConfigure(), controller.bidAuto)
+router.post('/bid/auto', controller.bidAuto) // bot function API
 
 router.post('/bid/auto/switcher', validator.validateAutoBidConfigure(), controller.bidConfigure) // auto bidder turn on/off
 
