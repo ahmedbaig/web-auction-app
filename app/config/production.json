@@ -1,6 +1,6 @@
 {
     "origin": "https://scopic-auction.herokuapp.com/",
     "db": {
-        "name": "Production"
+        "name": "production"
     }
 }

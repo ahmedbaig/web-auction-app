@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -7,7 +8,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
   public logged: string = null;
+  constructor(private router:Router){}
   ngOnInit(){
-    this.logged = localStorage.getItem("user");
+    if(localStorage.getItem("session")==null){
+      localStorage.clear();
+      localStorage.setItem("session", "false");
+    }else{ 
+      if(localStorage.getItem("session")=="true"){
+        this.logged = sessionStorage.getItem("user");
+      }else{
+        this.logged = sessionStorage.getItem("user");
+      }
+      this.router.navigate([`/items`])
+    }
+    
   }
 }

@@ -21,7 +21,7 @@ exports.findLimitPage = function(query, page, limit) {
         Item.find(query)
             .skip(limit * (page - 1) ? limit * (page - 1) : 0)
             .limit(limit ? limit : 50)
-            .sort({ createdDate: 1 })
+            .sort({ createdDate: -1 })
             .exec(function(err, items) {
                 if (err) {
                     reject(err);
