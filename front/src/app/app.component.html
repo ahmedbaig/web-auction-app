@@ -1,4 +1,6 @@
 <div *ngIf="logged==null">
     <app-login></app-login>
 </div>
-<router-outlet></router-outlet>
+<div *ngIf="logged!=null">
+    <router-outlet></router-outlet>
+</div>

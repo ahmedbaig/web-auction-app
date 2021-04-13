@@ -14,26 +14,26 @@ export class BidsService {
   constructor(public http: HttpClient) {
   }
   
-  postBid(search: string): Observable<any> {
-    return this.http.post(this.origin + `/api/item/search`, { keyword: search }, {
+  postBid(body: any): Observable<any> {
+    return this.http.post(this.origin + `/api/auction/bid`, body, {
       headers: this.headers
     });
   } 
   
-  bidBotFire(search: string): Observable<any> {
-    return this.http.post(this.origin + `/api/item/search`, { keyword: search }, {
+  bidBotFire(item: string): Observable<any> {
+    return this.http.post(this.origin + `/api/auction/bid/auto`, { item }, {
       headers: this.headers
     });
   } 
   
-  botSettings(search: string): Observable<any> {
-    return this.http.post(this.origin + `/api/item/search`, { keyword: search }, {
+  botSettings(user: string, max: number): Observable<any> {
+    return this.http.post(this.origin + `/api/auction/bid/bot`, {user, max}, {
       headers: this.headers
     });
   } 
   
-  botEnable(search: string): Observable<any> {
-    return this.http.post(this.origin + `/api/item/search`, { keyword: search }, {
+  botEnable(user: string, item: string): Observable<any> {
+    return this.http.post(this.origin + `/api/auction/bid/auto/switcher`, { item, user }, {
       headers: this.headers
     });
   } 

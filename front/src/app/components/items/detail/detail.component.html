@@ -1,3 +1,4 @@
+<app-header></app-header>
 <div class="container p-5">
     <div class="row">
         <div class="col-md-8">
@@ -11,7 +12,7 @@
                             <h2>{{item.name}}</h2>
                             <p>{{item.description}}</p>
                         </div>
-                    </div> 
+                    </div>
                     <div class="col-md-2">
                         <h5>Price <span class="itemPrice">${{item.price}}</span></h5>
                     </div>
@@ -24,10 +25,8 @@
                                         <div class="input-group-prepend">
                                             <div class="input-group-text">$</div>
                                         </div>
-                                        <input type="number" *ngIf="bids.length==0" [min]="item.price" class="form-control"
-                                            id="inlineFormInputGroupUsername2" placeholder="Enter Bid Amount">
-                                        <input type="number" *ngIf="bids.length>0" [min]="bids[bids.length-1].amount" class="form-control"
-                                            id="inlineFormInputGroupUsername2" placeholder="Enter Bid Amount">
+                                        <input type="number" *ngIf="bids.length==0" [min]="item.price" [(ngModel)]="amount" name="amount" class="form-control" id="inlineFormInputGroupUsername2" placeholder="Enter Bid Amount">
+                                        <input type="number" *ngIf="bids.length>0" [min]="bids[bids.length-1].amount" [(ngModel)]="amount" name="amount" class="form-control" id="inlineFormInputGroupUsername2" placeholder="Enter Bid Amount">
                                     </div>
                                 </form>
                             </div>
@@ -35,12 +34,16 @@
                             <div class="col-md-5">
                                 <div class="btn-group" role="group">
                                     <div class="row">
-                                        <div class="col-md-6">
-                                            <button class="btn btn-primary" style="font-size:12px"> Bid
+                                        <div class="col-md-4">
+                                            <button (click)="bidNow()" class="btn btn-primary" style="font-size:12px"> Bid
                                                 Now</button>
                                         </div>
-                                        <div class="col-md-6">
-                                            <button class="btn btn-primary" style="font-size:12px">Auto Bid</button>
+                                        <div class="col-md-4">
+                                            <button (click)="botConfigure()" class="btn btn-primary" style="font-size:12px">Auto Bid</button>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <button (click)="openBotSettingsModel()" class="btn btn-primary" style="font-size:12px">Open Bot Settings</button>
                                         </div>
                                     </div>
                                 </div>
@@ -61,7 +64,6 @@
             <table class="table">
                 <thead class="thead-dark">
                     <tr>
-                        <th scope="col">#</th>
                         <th scope="col">User</th>
                         <th scope="col">Amount</th>
                         <th scope="col">Date & Time</th>
@@ -69,14 +71,37 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let bid of bids | paginate: { itemsPerPage: 10, currentPage: page }">
-                        <th scope="row">1</th>
                         <td>{{bid.user}}</td>
-                        <td>{{bid.amount}}</td>
+                        <td>$ {{bid.amount}}</td>
                         <td>{{bid.createdDate}}</td>
                     </tr>
                 </tbody>
             </table>
             <pagination-controls (pageChange)="page = $event"></pagination-controls>
+        </div>
+    </div>
+</div>
+
+
+<div id="botSettings" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Auto Bidding Bot Settings</h5>
+
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="biddingAmount">Max Bidding Amount</label>
+                        <input type="number" class="form-control" name="botMax" [(ngModel)]="botMax" id="biddingAmount" placeholder="Enter Amount">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button (click)="openBotSettingsModel()" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button (click)="saveBotSettings()" type="button" class="btn btn-primary">Save changes</button>
+            </div>
         </div>
     </div>
 </div>

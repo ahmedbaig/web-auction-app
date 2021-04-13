@@ -109,50 +109,51 @@ exports.bidAuto = async function(req, res) {
                                     msg: "Item not found"
                                 })
                             }
-                            Promise.all(bots.map(bot => {
-                                    return new Promise(function(resolve, reject) {
-                                        if (bot.max >= bot.credit) {
-                                            if ((bot.credit + item.price) > bot.max && (bot.max - bot.credit) < item.price) {
-                                                console.log("Cannot deploy bot. Bidding value exceeds max bidding value", bot)
-                                                resolve({ msg: "Cannot deploy bot. Bidding value exceeds max bidding value", bot })
+                            BidService.findLastDocument({ item: req.body.item })
+                                .then(last_bid => {
+                                    let lastBidAmount = 0
+                                    let lastBidUser = ""
+                                    if (last_bid.length != 0) {
+                                        lastBidAmount = last_bid[0].amount
+                                        lastBidUser = last_bid[0].user
+                                    }
+                                    let newBidsCache = []
+                                    Promise.all(bots.map(bot => {
+                                        return new Promise((resolve, reject) => {
+                                            if (bot.max >= bot.credit) {
+                                                if ((bot.credit + item.price) > bot.max && (bot.max - bot.credit) < item.price) {
+                                                    console.log("Cannot deploy bot. Bidding value exceeds max bidding value", bot)
+                                                    resolve({ msg: "Cannot deploy bot. Bidding value exceeds max bidding value", bot })
+                                                } else {
+                                                    let user_bid = {
+                                                        user: bot.user,
+                                                        amount: item.price + 1,
+                                                        item: req.body.item
+                                                    }
+                                                    if (last_bid.length != 0) {
+                                                        if (lastBidUser == user_bid.user) {
+                                                            return resolve({ msg: "You already own the latest bid. Cannot bid again", bot })
+                                                        }
+                                                        user_bid.amount = lastBidAmount + 1
+                                                    }
+                                                    lastBidAmount = user_bid.amount;
+                                                    lastBidUser = user_bid.user
+                                                    let bot_credit = bot.credit + user_bid.amount;
+                                                    AutoBidService.findByIdAndUpdate(bot.id, { credit: bot_credit })
+                                                        .then(updatedbot => {})
+                                                    newBidsCache.push(user_bid)
+                                                    resolve({ msg: "Bid created successfully", bid: user_bid })
+                                                }
                                             } else {
-                                                BidService.findLastDocument({ item: req.body.item })
-                                                    .then(last_bid => {
-                                                        let user_bid = {
-                                                            user: bot.user,
-                                                            amount: item.price + 1,
-                                                            item: req.body.item
-                                                        }
-                                                        if (last_bid.length != 0) {
-                                                            console.log("OLD BID", last_bid)
-                                                                // BIDS EXIST
-                                                            if (last_bid[0].user == user_bid.user) {
-                                                                return resolve({ msg: "You already own the latest bid. Cannot bid again", bot, bid: last_bid[0] })
-                                                            }
-                                                            user_bid.amount = last_bid[0].amount + 1
-                                                        }
-                                                        let bot_credit = bot.credit + user_bid.amount;
-                                                        AutoBidService.findByIdAndUpdate(bot.id, { credit: bot_credit })
-                                                            .then(updatedbot => {
-                                                                console.log("Auto bidding bot updated", bot)
-                                                            })
-                                                        console.log("THE REAL ITEM", item)
-                                                        BidService.createNewBid(user_bid)
-                                                            .then(bid => {
-                                                                console.log("Bid created successfully", bid)
-                                                                resolve({ msg: "Bid created successfully" })
-                                                            })
-                                                    })
+                                                resolve({ msg: "Cannot deploy bot. Max bidding value reached", bot })
                                             }
-                                        } else {
-                                            resolve({ msg: "Cannot deploy bot. Max bidding value reached", bot })
-                                        }
+                                        })
+                                    })).then(data => {
+                                        BidService.createMany(newBidsCache)
+                                            .then(bid => {
+                                                res.send({ success: true, msg: "Bids created successfully", data })
+                                            })
                                     })
-                                })).then((data) => {
-                                    res.send({ success: true, data })
-                                })
-                                .catch(error => {
-                                    res.status(400).send({ success: false, msg: error });
                                 })
                         })
                         .catch(error => {

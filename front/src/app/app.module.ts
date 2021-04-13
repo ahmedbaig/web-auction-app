@@ -10,6 +10,7 @@ import { ListComponent } from './components/items/list/list.component';
 import { DetailComponent } from './components/items/detail/detail.component';
 import { BotComponent } from './components/bot/bot.component';
 import { LoginComponent } from './components/login/login.component';
+import { HeaderComponent } from './components/header/header.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { LoginComponent } from './components/login/login.component';
     ListComponent,
     DetailComponent,
     BotComponent,
-    LoginComponent
+    LoginComponent,
+    HeaderComponent
   ],
   imports: [
     HttpClientModule,

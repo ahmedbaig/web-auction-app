@@ -15,6 +15,20 @@ const create = function(bidData) {
 }
 exports.create = create;
 
+const createMany = function(bidData) {
+    return new Promise(function(resolve, reject) {
+        Bid.insertMany(bidData, function(err, bid) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(bid);
+            }
+        })
+
+    })
+}
+exports.createMany = createMany;
+
 const createNewBid = (body) => {
     return new Promise(function(resolve, reject) {
         create(body)

@@ -3,6 +3,7 @@ import { getOrigin } from 'src/app/origin';
 import { ItemsService } from 'src/app/services/items.service';
 import * as _ from "lodash";
 import { Router } from '@angular/router';
+import Swal from "sweetalert2"
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
@@ -22,6 +23,8 @@ export class ListComponent implements OnInit {
   ngOnInit() {
     this.$ItemsService.getItems().subscribe(itemsResponse=>{
       this.setImagesOnData(itemsResponse)
+    }, error => {
+      Swal.fire("Opps..", error.msg, "error")
     })
   }
 
@@ -37,6 +40,8 @@ export class ListComponent implements OnInit {
     if(this.search!=""){
       this.$ItemsService.findItems(this.search).subscribe(searchResponse=>{
         this.setImagesOnData(searchResponse)
+      }, error => {
+        Swal.fire("Opps..", error.error.msg, "error")
       })
     }
   } 
