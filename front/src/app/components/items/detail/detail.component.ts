@@ -1,4 +1,4 @@
-import { Component, OnInit, ɵSWITCH_TEMPLATE_REF_FACTORY__POST_R3__ } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ɵSWITCH_TEMPLATE_REF_FACTORY__POST_R3__ } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getOrigin } from 'src/app/origin';
 import { BidsService } from 'src/app/services/bids.service';
@@ -20,7 +20,16 @@ export class DetailComponent implements OnInit {
   botMax: number = 0;
   amount: number = 0;
   origin: String = getOrigin()
-  constructor(private $bidService: BidsService, private $ItemService: ItemsService, private route: ActivatedRoute, private router: Router) { }
+  
+	dateSubscriber: any;
+	days: number = 0;
+	hours: number = 0;
+	minutes: number = 0;
+	seconds: number = 0;
+	isPastEvent: boolean = false;
+	months: number = 0
+	years: number = 0
+  constructor(private changeDetector: ChangeDetectorRef,private $bidService: BidsService, private $ItemService: ItemsService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
     if (localStorage.getItem("session") == "true") {
@@ -44,6 +53,38 @@ export class DetailComponent implements OnInit {
         })
         this.amount = this.bids.length > 0 ? this.bids[0].amount + 1 : this.item.price + 1;
         this.item.image = `${this.origin}/resources-images/${this.item.image}`
+        
+				let initialdate = moment().format('YYYY-MM-DD');
+				let start_time = moment().format('HH:mm');
+				let enddate = moment(this.item.expireDate).format('YYYY-MM-DD');
+				let end_time = moment(this.item.expireDate).format('HH:mm');
+				let todayInUnixSeconds = moment(initialdate + " " + start_time).unix();
+				let eventInUnixSeconds = moment(enddate + " " + end_time).unix();
+
+
+
+				var eventTime = eventInUnixSeconds; //Sun, 21 Apr 2013 13:00:00 GMT
+				var currentTime = todayInUnixSeconds; //Thu, 24 Jan 2013 13:00:00 GMT
+
+				var diffTime = eventTime - currentTime; //better to handle this in Controller to avoid timezone problem
+				var duration = moment.duration(diffTime, 'seconds');
+				var interval = 1;
+
+				this.isPastEvent = false;
+				this.dateSubscriber = setInterval(() => {
+					duration = moment.duration(duration.asSeconds() - interval, 'seconds');
+					if (duration.days() <= 0 && duration.hours() <= 0 && duration.minutes() <= 0 && duration.seconds() <= 0) {
+						this.isPastEvent = true;  
+						clearInterval(this.dateSubscriber);
+					} 
+					this.years = duration.years()
+					this.months = duration.months()
+					this.days = duration.days()
+					this.hours = duration.hours()
+					this.minutes = duration.minutes()
+					this.seconds = duration.seconds()
+					this.changeDetector.detectChanges();					 
+				}, 1000);
       } else {
         Swal.fire("Opps..", itemResponse.msg, "error")
       }

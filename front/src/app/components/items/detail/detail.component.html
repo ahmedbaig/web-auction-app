@@ -4,55 +4,72 @@
         <div class="col-md-8">
             <div class="panel panel-default  panel--styled">
                 <div class="panel-body">
-                    <div class="col-md-12 panelTop">
-                        <div class="col-md-4">
-                            <img class="img-responsive fit-image" [src]="item.image" [alt]="item.name" />
-                        </div>
-                        <div class="col-md-8">
-                            <h2>{{item.name}}</h2>
-                            <p>{{item.description}}</p>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <h5>Price <span class="itemPrice">${{item.price}}</span></h5>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <form class="form-inline">
-                                    <label class="sr-only" for="inlineFormInputGroupUsername2">Bid Amount</label>
-                                    <div class="input-group mb-2 mr-sm-2">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text">$</div>
-                                        </div>
-                                        <input type="number" *ngIf="bids.length==0" [min]="item.price" [(ngModel)]="amount" name="amount" class="form-control" id="inlineFormInputGroupUsername2" placeholder="Enter Bid Amount">
-                                        <input type="number" *ngIf="bids.length>0" [min]="bids[bids.length-1].amount" [(ngModel)]="amount" name="amount" class="form-control" id="inlineFormInputGroupUsername2" placeholder="Enter Bid Amount">
-                                    </div>
-                                </form>
+                    <div class="row">
+                        <div class="col-md-10 panelTop">
+                            <div class="col-md-4">
+                                <img class="img-responsive fit-image" [src]="item.image" [alt]="item.name" />
                             </div>
+                            <div class="col-md-8">
+                                <h2>{{item.name}}</h2>
+                                <p>{{item.description}}</p>
+                            </div>
+                        </div>
 
-                            <div class="col-md-5">
-                                <div class="btn-group" role="group">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <button (click)="bidNow()" class="btn btn-primary" style="font-size:12px"> Bid
-                                                Now</button>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <button (click)="botConfigure()" class="btn btn-primary" style="font-size:12px">Auto Bid</button>
-                                        </div>
+                        <div class="col-md-2">
 
-                                        <div class="col-md-4">
-                                            <button (click)="openBotSettingsModel()" class="btn btn-primary" style="font-size:12px">Open Bot Settings</button>
+                            <h5>Price <span class="itemPrice">${{item.price}}</span></h5>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <!-- <div class="event-date"><span class="date">{{date}}</span> - <span class="month">{{month}}</span> - <span class="year">{{year}}</span></div> -->
+                            <div id="countdown">
+                                <ul class="list-group list-group-horizontal">
+                                    <li *ngIf="years > 0" class="list-group-item"><span>{{years}}</span>Years</li>
+                                    <li *ngIf="months > 0" class="list-group-item"><span>{{months}}</span>Months</li>
+                                    <li class="list-group-item"><span>{{days}}</span>Days</li>
+                                    <li class="list-group-item"><span>{{hours}}</span>Hours</li>
+                                    <li class="list-group-item"><span>{{minutes}}</span>Minutes</li>
+                                    <li class="list-group-item"><span>{{seconds}}</span>Seconds</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <form class="form-inline">
+                                        <label class="sr-only" for="inlineFormInputGroupUsername2">Bid Amount</label>
+                                        <div class="input-group mb-2 mr-sm-2">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">$</div>
+                                            </div>
+                                            <input type="number" *ngIf="bids.length==0" [min]="item.price" [(ngModel)]="amount" name="amount" class="form-control" id="inlineFormInputGroupUsername2" placeholder="Enter Bid Amount">
+                                            <input type="number" *ngIf="bids.length>0" [min]="bids[bids.length-1].amount" [(ngModel)]="amount" name="amount" class="form-control" id="inlineFormInputGroupUsername2" placeholder="Enter Bid Amount">
                                         </div>
-                                    </div>
+                                    </form>
                                 </div>
 
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 text-center">
+                                <div class="col-md-5">
+                                    <div class="btn-group" role="group">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <button (click)="bidNow()" class="btn btn-primary" style="font-size:12px"> Bid
+                                                    Now</button>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <button (click)="botConfigure()" class="btn btn-primary" style="font-size:12px">Auto Bid</button>
+                                            </div>
 
+                                            <div class="col-md-4">
+                                                <button (click)="openBotSettingsModel()" class="btn btn-primary" style="font-size:12px">Open Bot Settings</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
                     </div>
