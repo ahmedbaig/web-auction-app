@@ -58,7 +58,7 @@
         "sweetalert2": "^10.16.0",
         "twilio": "^3.48.0",
         "uuid": "^7.0.2",
-        "validator": "^13.0.0",
+        "validator": "^13.7.0",
         "winston": "^3.3.3"
     },
     "engines": {
